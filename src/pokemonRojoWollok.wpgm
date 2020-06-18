@@ -1,6 +1,11 @@
 import pokemonRojoW.*
 import wollok.game.*
 
+// Pelea de dos pokemon, cada uno tiene un poder y tiene vida
+// el ataque se mueve en una direccion hasta salir de la pantalla
+// o colisionar. Si colisiona resta vida. Gana el pokemon que
+// quede en pie.
+
 program combatePokemon{
 	
 	
