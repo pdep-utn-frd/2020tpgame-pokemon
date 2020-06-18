@@ -30,7 +30,7 @@ object blastoise {
 	
 	var property position = game.at(1,3)
 	
-	method image() = "BlastoisePixel.png"
+	method image() = "blastoise.png"
 	
 	
 	method moverL(){
@@ -56,7 +56,7 @@ object charizard {
 	
 	var property position = game.at(10,3)
 	
-	method image() = "CharizardPixel.png"
+	method image() = "charizard2.png"
 	
 	
 	method moverL(){
