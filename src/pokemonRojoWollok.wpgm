@@ -1,0 +1,21 @@
+import pokemonRojoW.*
+import wollok.game.*
+
+program combatePokemon{
+	
+	
+	game.addVisualCharacter(blastoise)
+	game.addVisualCharacter(charizard) 
+	
+	game.addVisual(llamarada)
+	game.addVisual(hidrocanion)
+	
+	game.boardGround("FondodePokemon.jpg")
+	
+	game.width(12)
+	game.height(6)
+	
+	juego.inicio()
+	
+	game.start()
+}
