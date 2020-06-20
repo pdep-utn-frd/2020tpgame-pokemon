@@ -12,10 +12,7 @@ program combatePokemon{
 	game.addVisual(blastoise)
 	game.addVisual(charizard) 
 	
-	game.addVisual(llamarada)
-	game.addVisual(hidrocanion)
-	
-	game.boardGround("FondodePokemon.jpg")
+	game.boardGround("FondoPokemonWollok.png")
 	
 	game.width(12)
 	game.height(6)

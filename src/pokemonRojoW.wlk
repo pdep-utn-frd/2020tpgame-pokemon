@@ -18,10 +18,8 @@ object juego {
 		//poderes
 		
 		keyboard.space().onPressDo({blastoise.hidroCanion()})
-		keyboard.space().onPressDo({llamarada.moverAlInfinito(charizard)})
 		
 		keyboard.enter().onPressDo({charizard.llamarada()})
-		keyboard.enter().onPressDo({hidrocanion.moverAlInfinito(blastoise)})
 		
 	}
 }
@@ -52,8 +50,9 @@ object blastoise {
 										   position = self.position(),
 										   imagen= "hidrocañon.png"
 										   )
-		
-		game.say(self,{hidrocanion =>  "Blastoise uso" hidrocanion.nombre()})
+		var nombreHabilidad = hidrocanion.nombre()
+		game.say(self,nombreHabilidad)
+		game.addVisual(hidrocanion)
 	}
 	
 }
@@ -84,7 +83,9 @@ object charizard {
 										   position = self.position(),
 										   imagen= "llamarada.png"
 										   )
-		game.say(self,{Llamarada =>  "Charizard uso" Llamarada.nombre()})
+		var nombreHabilidad = Llamarada.nombre()							   
+		game.say(self, nombreHabilidad)
+		game.addVisual(Llamarada)
 		
 	}
 	
