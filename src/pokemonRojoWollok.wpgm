@@ -9,8 +9,8 @@ import wollok.game.*
 program combatePokemon{
 	
 	
-	game.addVisualCharacter(blastoise)
-	game.addVisualCharacter(charizard) 
+	game.addVisual(blastoise)
+	game.addVisual(charizard) 
 	
 	game.addVisual(llamarada)
 	game.addVisual(hidrocanion)

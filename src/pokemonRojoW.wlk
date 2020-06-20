@@ -47,7 +47,13 @@ object blastoise {
 	}
 	
 	method hidroCanion(){
-		game.say(self, "Blastoise uso Hidro Cañon")
+		const hidrocanion = new Habilidad (nombre = "Hidro Cañon",
+										   danio = 150,
+										   position = self.position(),
+										   imagen= "hidrocañon.png"
+										   )
+		
+		game.say(self,{hidrocanion =>  "Blastoise uso" hidrocanion.nombre()})
 	}
 	
 }
@@ -73,32 +79,57 @@ object charizard {
 	}
 	
 	method llamarada(){
-		game.say(self, "Charizard uso Llamarada")
+		const Llamarada = new Habilidad (nombre = "Llamarada",
+										   danio = 110,
+										   position = self.position(),
+										   imagen= "llamarada.png"
+										   )
+		game.say(self,{Llamarada =>  "Charizard uso" Llamarada.nombre()})
 		
 	}
 	
 }
 
-object llamarada{
+class Habilidad { 
 	
-	var property position 
-	
-	method image() = "llamarada.png"
-
-	method moverAlInfinito(pokemon) {
-		position = pokemon.position().left(1)
-	}
-	
-}
-
-object hidrocanion{
-
+	var property nombre
+	var danio
 	var property position
+	var imagen 
 	
-	method image() = "hidrocañon.png"
-
-	method moverAlInfinito(pokemon) {
-		position = pokemon.position().right(1)
+	method image() = imagen 
+	
+	method cuantoDanio(){
+		return danio
 	}
-	
+
 }
+
+//Hacer una clase poder o ataque
+
+// pokemon tiene variable vidas 10, un method restarvida(ataque)
+// vida = vida - habilidad.daño()
+
+// un method actualizar vista quita al pokemon muerto
+
+//para el ataque paso posicion y pokemon que lo usa
+
+// limitar movimiento de posiciones hasta limite de pantalla
+
+//calcular el limite y donde estoy para, que la hablilidad sepa hasta
+//donde se puede mover el ataque
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
