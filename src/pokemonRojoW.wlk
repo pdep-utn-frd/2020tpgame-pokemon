@@ -60,39 +60,30 @@ object blastoise {
 	}
 
 	method moveteIzquierda() {
-		if (self.position().x() > 0 and self.position().x() <= 11) {
+		if (self.position().x() > 0 and self.position().x() <= 11) 
 			self.moverL()
-		} else {
-			self.moverR()
-		}
 	}
 
 	method moveteDerecha() {
-		if (self.position().x() >= 0 and self.position().x() < 11) {
+		if (self.position().x() >= 0 and self.position().x() < 11) 
 			self.moverR()
-		} else {
-			self.moverL()
-		}
 	}
 
 	method moveteArriba() {
-		if (self.position().y() >= 0 and self.position().y() < 5) {
+		if (self.position().y() >= 0 and self.position().y() < 5) 
 			self.moverUp()
-		} else {
-			self.moverDown()
-		}
 	}
 
 	method moveteAbajo() {
-		if (self.position().y() > 0 and self.position().y() <= 6) {
+		if (self.position().y() > 0 and self.position().y() <= 6) 
 			self.moverDown()
-		} else {
-			self.moverUp()
-		}
 	}
 
 	method ataque() {
-		const hidrocanion = new Habilidad(nombre = "Hidro Cañon", danio = 150, position = self.position(), imagen = "hidrocañon.png")
+		const hidrocanion = new Habilidad(nombre = "Hidro Cañon",
+										  danio = 150, 
+										  position = self.position(), 
+										  imagen = "hidrocañon.png")
 		var nombreHabilidad = hidrocanion.nombre()
 		game.say(self, nombreHabilidad)
 		game.addVisual(hidrocanion)
@@ -131,39 +122,30 @@ object charizard {
 	}
 
 	method moveteIzquierda() {
-		if (self.position().x() > 0 and self.position().x() <= 11) {
+		if (self.position().x() > 0 and self.position().x() <= 11) 
 			self.moverL()
-		} else {
-			self.moverR()
-		}
 	}
 
 	method moveteDerecha() {
-		if (self.position().x() >= 0 and self.position().x() < 11) {
+		if (self.position().x() >= 0 and self.position().x() < 11) 
 			self.moverR()
-		} else {
-			self.moverL()
-		}
 	}
 
 	method moveteArriba() {
-		if (self.position().y() >= 0 and self.position().y() < 5) {
+		if (self.position().y() >= 0 and self.position().y() < 5) 
 			self.moverUp()
-		} else {
-			self.moverDown()
-		}
 	}
 
 	method moveteAbajo() {
-		if (self.position().y() > 0 and self.position().y() <= 6) {
+		if (self.position().y() > 0 and self.position().y() <= 6) 
 			self.moverDown()
-		} else {
-			self.moverUp()
-		}
 	}
 
 	method ataque() {
-		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110, position = self.position(), imagen = "llamarada.png")
+		const llamarada = new Habilidad(nombre = "Llamarada",
+										danio = 110, 
+										position = self.position(), 
+										imagen = "llamarada.png")
 		var nombreHabilidad = llamarada.nombre()
 		game.say(self, nombreHabilidad)
 		game.addVisual(llamarada)
@@ -202,6 +184,8 @@ class Habilidad {
 //	}
 //	
 //}
+
+
 // pokemon tiene variable vidas 10, un method restarvida(ataque)
 // vida = vida - habilidad.daño()
 // un method actualizar vista quita al pokemon muerto
