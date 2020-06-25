@@ -3,7 +3,7 @@ import wollok.game.*
 object juego {
 
 	method inicio() {
-//		// movimiento
+//		// Movimiento de Pj
 		keyboard.a().onPressDo({ blastoise.moveteIzquierda()})
 		keyboard.d().onPressDo({ blastoise.moveteDerecha()})
 		keyboard.w().onPressDo({ blastoise.moveteArriba()})
@@ -14,17 +14,21 @@ object juego {
 		keyboard.l().onPressDo({ charizard.moveteDerecha()})
     	keyboard.i().onPressDo({ charizard.moveteArriba()})
     	
-//	    keyboard.a().onPressDo({ blastoise.moverL()})
-//	    keyboard.s().onPressDo({ blastoise.moverDown()})
-//	    keyboard.d().onPressDo({ blastoise.moverR()})
-//	    keyboard.w().onPressDo({ blastoise.moverUp()})
-//		keyboard.j().onPressDo({ charizard.moverL()})
-//		keyboard.k().onPressDo({ charizard.moverDown()})
-//		keyboard.l().onPressDo({ charizard.moverR()})
-//		keyboard.i().onPressDo({ charizard.moverUp()})
-			// poderes
+			// Poderes
 		keyboard.space().onPressDo({ blastoise.ataque()})
 		keyboard.enter().onPressDo({ charizard.ataque()})
+
+			// Colisiones
+		game.whenCollideDo(blastoise,{habilidad => blastoise.restarVida(habilidad) 
+						   game.say(self,"mi vida actual")
+						   game.say(self,blastoise.vidas())
+						  
+		})
+		game.whenCollideDo(charizard,{habilidad => charizard.restarVida(habilidad) 
+						   game.say(self,"mi vida actual")
+						   game.say(self,charizard.vidas())
+						  
+		})
 	}
 
 }
@@ -32,13 +36,14 @@ object juego {
 object blastoise {
 
 	var property position = game.at(1, 3)
-	var vidas = 10
+	var property vidas = 8
 
-	// method restarVida() {
-	// vidas = - habilidad.danio()
-	// }
 	method muerto() {
 		return vidas == 0
+	}
+	
+	method restarVida(habilidad) {
+	vidas = vidas - (habilidad.cuantoDanio()/10)
 	}
 
 	method image() = "blastoise.png"
@@ -94,11 +99,11 @@ object blastoise {
 object charizard {
 
 	var property position = game.at(10, 3)
-	var vidas = 10
+	var property vidas = 12
 
-	// method restarVida() {
-	// vidas = -habilidad.danio()
-	// }
+    method restarVida(habilidad) {
+	vidas = vidas - (habilidad.cuantoDanio()/10)
+	}
 	method muerto() {
 		return vidas == 0
 	}
