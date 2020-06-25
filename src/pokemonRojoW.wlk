@@ -92,7 +92,7 @@ object blastoise {
 	}
 	
 	method colisionoCon(habilidad){
-		game.say(self,"mi vida actual" + self.vidas())
+		game.say(self," mi vida actual : " + self.vidas())
 		game.removeVisual(habilidad)
 	}
 
