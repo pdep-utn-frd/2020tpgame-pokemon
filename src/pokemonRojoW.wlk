@@ -19,11 +19,8 @@ object juego {
 		keyboard.enter().onPressDo({ charizard.ataque()})
 
 			// Colisiones
-		game.whenCollideDo(blastoise,{habilidad => blastoise.restarVida(habilidad) 
-						   game.say(self,"mi vida actual")
-						   game.say(self,blastoise.vidas())
-						  
-		})
+		game.whenCollideDo(blastoise,{habilidad => blastoise.colisionoCon(habilidad)})
+		
 		game.whenCollideDo(charizard,{habilidad => charizard.restarVida(habilidad) 
 						   game.say(self,"mi vida actual")
 						   game.say(self,charizard.vidas())
@@ -92,6 +89,11 @@ object blastoise {
 		var nombreHabilidad = hidrocanion.nombre()
 		game.say(self, nombreHabilidad)
 		game.addVisual(hidrocanion)
+	}
+	
+	method colisionoCon(habilidad){
+		game.say(self,"mi vida actual" + self.vidas())
+		game.removeVisual(habilidad)
 	}
 
 }
