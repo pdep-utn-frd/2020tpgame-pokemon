@@ -21,10 +21,11 @@ object juego {
 			// Colisiones
 		game.whenCollideDo(blastoise,{habilidad => blastoise.colisionoCon(habilidad)})
 		
-		game.whenCollideDo(charizard,{habilidad => charizard.restarVida(habilidad) 
-						   game.say(self,"mi vida actual")
-						   game.say(self,charizard.vidas())
+		game.whenCollideDo(charizard,{habilidad => charizard.colisionoCon(habilidad)})
 						  
+		game.whenCollideDo(habilidad, {habilidad2 => habilidad.explosion(habilidad2)
+							const explosion = new Explosiones ( imagen = "Explosion.png")
+							game.onTick(2000,"explosion",game.removeVisual(explosion))
 		})
 	}
 
@@ -157,6 +158,11 @@ object charizard {
 		game.say(self, nombreHabilidad)
 		game.addVisual(llamarada)
 	}
+	
+	method colisionoCon(habilidad){
+		game.say(self," mi vida actual : " + self.vidas())
+		game.removeVisual(habilidad)
+	}
 
 }
 
@@ -172,7 +178,17 @@ class Habilidad {
 	method cuantoDanio() {
 		return danio
 	}
+	
+	method explosion(habilidad){
+		game.removeVisual(habilidad)
+	}
 
+}
+
+class Explosiones {
+	var imagen
+	
+	method image() = imagen
 }
 
 //class ActualizarVista {
