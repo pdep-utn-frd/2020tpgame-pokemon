@@ -25,14 +25,15 @@ object juego {
 			
 			// Colisiones
 		game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)
-										game.onTick(2000, "movimiento", habilidad.movete())})
+										//game.onTick(2000, "movimiento", habilidad.movete())
+										})
 		
 		game.whenCollideDo(charizard, { habilidad => charizard.colisionoCon(habilidad)})
-		
-		game.whenCollideDo(habilidad, { habilidad2 =>habilidad.explosion(habilidad2)
-			const explosion = new Explosiones(imagen = "Explosion.png")
-			game.onTick(2000, "explosion", game.removeVisual(explosion))
-		})
+//		
+//		game.whenCollideDo(habilidad, { habilidad2 =>habilidad.explosion(habilidad2)
+//			const explosion = new Explosiones(imagen = "Explosion.png")
+//			game.onTick(2000, "explosion", game.removeVisual(explosion))
+//		})
 	}
 
 }
@@ -53,9 +54,12 @@ object blastoise {
 	method image() = "blastoise.png"
 
 	method ataque() {
-		const hidrocanion = new Habilidad(nombre = "Hidro Cañon", danio = 150, position =game.at(self.position().x()+1,self.position().y()+1), imagen = "hidrocañon.png")
+		const hidrocanion = new Habilidad(nombre = "Hidro Cañon", danio = 150,
+										  position = self.position().x()+1,
+										  imagen = "hidrocañon.png"
+		)
 		game.say(self, hidrocanion.nombre())
-		game.addVisual(hidrocanion.image())
+		game.addVisual(hidrocanion)
 	}
 
 	method colisionoCon(habilidad) {
@@ -81,7 +85,10 @@ object charizard {
 	method image() = "charizard2.png"
 
 	method ataque() {
-		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110, position = self.position(), imagen = "llamarada.png")
+		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110,
+			                            position = self.position().x()-1,
+			                            imagen = "llamarada.png"
+		)
 		game.say(self, llamarada.nombre())
 		game.addVisual(llamarada)
 	}
