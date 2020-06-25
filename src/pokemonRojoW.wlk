@@ -3,6 +3,7 @@ import wollok.game.*
 object juego {
 
 	method inicio() {
+		
 		// Movimiento de Pj
 		keyboard.a().onPressDo({ movimiento.moveteIzquierda(blastoise)})
 		keyboard.d().onPressDo({ movimiento.moveteDerecha(blastoise)})
@@ -13,16 +14,22 @@ object juego {
 		keyboard.k().onPressDo({ movimiento.moveteAbajo(charizard)})
 		keyboard.l().onPressDo({ movimiento.moveteDerecha(charizard)})
 		keyboard.i().onPressDo({ movimiento.moveteArriba(charizard)})
+		
 		//Movimiento de Habilidades
-		game.onTick(2000, "movimiento", { hidrocanion.movete() })
+		//game.onTick(2000, "movimiento", habilidad.movete())
+		
 			// Poderes
 		keyboard.space().onPressDo({ blastoise.ataque()})
+		
 		keyboard.enter().onPressDo({ charizard.ataque()})
+			
 			// Colisiones
-		game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)})
+		game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)
+										game.onTick(2000, "movimiento", habilidad.movete())})
+		
 		game.whenCollideDo(charizard, { habilidad => charizard.colisionoCon(habilidad)})
-		game.whenCollideDo(habilidad, { habilidad2 =>
-			habilidad.explosion(habilidad2)
+		
+		game.whenCollideDo(habilidad, { habilidad2 =>habilidad.explosion(habilidad2)
 			const explosion = new Explosiones(imagen = "Explosion.png")
 			game.onTick(2000, "explosion", game.removeVisual(explosion))
 		})
@@ -123,6 +130,7 @@ class Explosiones {
 //	}
 //
 //}
+
 object movimiento {
 
 	method moverL(objeto) {
