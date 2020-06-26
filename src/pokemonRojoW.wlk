@@ -15,8 +15,8 @@ object juego {
 		keyboard.l().onPressDo({ movimiento.moveteDerecha(charizard)})
 		keyboard.i().onPressDo({ movimiento.moveteArriba(charizard)})
 		
-		//Movimiento de Habilidades
-		//game.onTick(2000, "movimiento", habilidad.movete())
+		//Detener movimiento de Habilidades
+		//keyboard.p().onPressDo {game.removeTick("movimientoHidrocanion")}
 		
 			// Poderes
 		keyboard.space().onPressDo({ blastoise.ataque()})
@@ -24,11 +24,11 @@ object juego {
 		keyboard.enter().onPressDo({ charizard.ataque()})
 			
 			// Colisiones
-		game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)
+		//game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)
 										//game.onTick(2000, "movimiento", habilidad.movete())
-										})
+										//})
 		
-		game.whenCollideDo(charizard, { habilidad => charizard.colisionoCon(habilidad)})
+		//game.whenCollideDo(charizard, { habilidad => charizard.colisionoCon(habilidad)})
 //		
 //		game.whenCollideDo(habilidad, { habilidad2 =>habilidad.explosion(habilidad2)
 //			const explosion = new Explosiones(imagen = "Explosion.png")
@@ -54,20 +54,19 @@ object blastoise {
 	method image() = "blastoise.png"
 
 	method ataque() {
-		const hidrocanion = new Habilidad(nombre = "Hidro Cañon", danio = 150,
-										  position = self.position().x()+1,
-										  imagen = "hidrocañon.png"
-		)
+		const hidrocanion = new Habilidad(nombre="Hidrocanion",danio = 150,position =self.position(),imagen = "hidrocañon.png")
+		
 		game.say(self, hidrocanion.nombre())
+		game.onTick(300, "movimientoHidrocanion", {hidrocanion.movete()})
 		game.addVisual(hidrocanion)
 	}
-
-	method colisionoCon(habilidad) {
-		game.say(self, " mi vida actual : " + self.vidas())
-		game.removeVisual(habilidad)
-	}
-
 }
+//	method colisionoCon(habilidad) {
+//		game.say(self, " mi vida actual : " + self.vidas())
+//		game.removeVisual(habilidad)
+//	}
+
+
 
 object charizard {
 
@@ -86,17 +85,18 @@ object charizard {
 
 	method ataque() {
 		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110,
-			                            position = self.position().x()-1,
+			                            position = self.position(),
 			                            imagen = "llamarada.png"
 		)
 		game.say(self, llamarada.nombre())
+		game.onTick(300, "movimientoLlamarada", {llamarada.movete()})
 		game.addVisual(llamarada)
 	}
 
-	method colisionoCon(habilidad) {
-		game.say(self, " mi vida actual : " + self.vidas())
-		game.removeVisual(habilidad)
-	}
+//	method colisionoCon(habilidad) {
+//		game.say(self, " mi vida actual : " + self.vidas())
+//		game.removeVisual(habilidad)
+//	}
 
 }
 
@@ -114,9 +114,10 @@ class Habilidad {
 	}
 	method movete() {
 		const x = (0.. game.width()-1).anyOne() 
-		const y = (0.. game.height()-1).anyOne() 
+		const y = (0.. game.height()-1).anyOne()
 		position = game.at(x,y) 
 	}
+	
 
 }
 
