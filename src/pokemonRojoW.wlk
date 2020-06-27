@@ -3,48 +3,42 @@ import wollok.game.*
 object juego {
 
 	method inicio() {
-		
 		// Movimiento de Pj
 		keyboard.a().onPressDo({ movimiento.moveteIzquierda(blastoise)})
 		keyboard.d().onPressDo({ movimiento.moveteDerecha(blastoise)})
 		keyboard.w().onPressDo({ movimiento.moveteArriba(blastoise)})
 		keyboard.s().onPressDo({ movimiento.moveteAbajo(blastoise)})
-		
 		keyboard.j().onPressDo({ movimiento.moveteIzquierda(charizard)})
 		keyboard.k().onPressDo({ movimiento.moveteAbajo(charizard)})
 		keyboard.l().onPressDo({ movimiento.moveteDerecha(charizard)})
 		keyboard.i().onPressDo({ movimiento.moveteArriba(charizard)})
-		
-		//Detener movimiento de Habilidades
-		//keyboard.p().onPressDo {game.removeTick("movimientoHidrocanion")}
-		
+			// Detener movimiento de Habilidades
+			// keyboard.p().onPressDo {game.removeTick("movimientoHidrocanion")}
 			// Poderes
 		keyboard.space().onPressDo({ blastoise.ataque()})
-		
 		keyboard.enter().onPressDo({ charizard.ataque()})
-			
-			// Colisiones
-		//game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)
-										//game.onTick(2000, "movimiento", habilidad.movete())
-										//})
-		
-		//game.whenCollideDo(charizard, { habilidad => charizard.colisionoCon(habilidad)})
+	// Colisiones
+	 game.whenCollideDo(blastoise, { habilidad => blastoise.colisionoCon(habilidad)})
+	// })
+	// game.whenCollideDo(charizard, { habilidad => charizard.colisionoCon(habilidad)})
 //		
 //		game.whenCollideDo(habilidad, { habilidad2 =>habilidad.explosion(habilidad2)
 //			const explosion = new Explosiones(imagen = "Explosion.png")
 //			game.onTick(2000, "explosion", game.removeVisual(explosion))
 //		})
 	}
-
 }
+
 
 object blastoise {
 
 	var property position = game.at(1, 3)
 	var property vidas = 8
-	
+
 	method muerto() {
-		return vidas == 0
+		return if (vidas == 0) {
+			game.removeVisual(self)
+		}else{}
 	}
 
 	method restarVida(habilidad) {
@@ -54,17 +48,20 @@ object blastoise {
 	method image() = "blastoise.png"
 
 	method ataque() {
-		const hidrocanion = new Habilidad(nombre="Hidrocanion",danio = 150,position =self.position(),imagen = "hidrocañon.png")
-		
+	
+		const hidrocanion = new Habilidad(nombre = "Hidrocanion", danio = 150, position = self.position(), imagen = "hidrocañon.png")
 		game.say(self, hidrocanion.nombre())
-		game.onTick(300, "movimientoHidrocanion", {hidrocanion.movete()})
 		game.addVisual(hidrocanion)
+		hidrocanion.movete(self)
+	    game.onTick(3000, "movimiento", {hidrocanion.movete(self)})
+	    //keyboard.p().onPressDo {game.removeTick("movimientO")}
+		}
+		method colisionoCon(hidrocanion) {
+		game.say(self, " mi vida actual : " + self.vidas())
+		game.removeVisual(hidrocanion)
 	}
-}
-//	method colisionoCon(habilidad) {
-//		game.say(self, " mi vida actual : " + self.vidas())
-//		game.removeVisual(habilidad)
-//	}
+	}
+
 
 
 
@@ -78,18 +75,16 @@ object charizard {
 	}
 
 	method muerto() {
-		return vidas == 0
+		return if (vidas == 0) {
+			game.removeVisual(self)
+		}else{}
 	}
-
 	method image() = "charizard2.png"
 
 	method ataque() {
-		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110,
-			                            position = self.position(),
-			                            imagen = "llamarada.png"
-		)
+		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110, position = self.position(), imagen = "llamarada.png")
 		game.say(self, llamarada.nombre())
-		game.onTick(300, "movimientoLlamarada", {llamarada.movete()})
+		game.onTick(3000, "movimientoLlamarada", { llamarada.movete()})
 		game.addVisual(llamarada)
 	}
 
@@ -97,7 +92,6 @@ object charizard {
 //		game.say(self, " mi vida actual : " + self.vidas())
 //		game.removeVisual(habilidad)
 //	}
-
 }
 
 class Habilidad {
@@ -112,14 +106,16 @@ class Habilidad {
 	method explosion(habilidad) {
 		game.removeVisual(habilidad)
 	}
-	method movete() {
-		const x = (0.. game.width()-1).anyOne() 
-		const y = (0.. game.height()-1).anyOne()
-		position = game.at(x,y) 
-	}
-	
 
+	method movete(pokemon) {
+		const x = pokemon.position().x()+1   
+		const y = pokemon.position().x()   
+		position = game.at(x, y)
+	}
 }
+//(0 .. game.width() - 1).anyOne()
+//(0 .. game.height() - 1).anyOne()
+
 
 class Explosiones {
 
@@ -128,16 +124,6 @@ class Explosiones {
 	method image() = imagen
 
 }
-
-//class ActualizarVista {
-//
-//	method quitarPokemonMuerto() {
-//		if (pokemon.muerto()) {
-//			game.removeVisual(pokemon)
-//		}
-//	}
-//
-//}
 
 object movimiento {
 
