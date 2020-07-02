@@ -20,10 +20,9 @@ object juego {
 			// Colisiones
 		game.whenCollideDo(blastoise, { habilidad => blastoise.puedoColisionar(habilidad)})
 		game.whenCollideDo(charizard, { habilidad => charizard.puedoColisionar(habilidad)})
-		game.whenCollideDo(charizard, { pokemon => charizard.colisionConPokemon(pokemon)})
-		game.whenCollideDo(blastoise, { pokemon => blastoise.colisionConPokemon(pokemon)})
 		
-		//game.whenCollideDo(hidrocanion, { llamarada =>habilidad.colision(h)})
+		//game.whenCollideDo(charizard, { pokemon => charizard.colisionoConPokemon(pokemon)})
+		game.whenCollideDo(blastoise, { pokemon => blastoise.colisionoConPokemon(pokemon)})
 	}
 
 }
@@ -44,6 +43,7 @@ object blastoise {
 		game.say(self, hidrocanion.nombre())
 		game.addVisual(hidrocanion)
 		hidrocanion.movete1(self)
+		game.whenCollideDo(hidrocanion, { llamarada => hidrocanion.colision(llamarada)})
 		game.onTick(3000, "movimientoHidrocanion", { hidrocanion.movete1(self)})
 	// keyboard.p().onPressDo ({game.removeTickEvent("movimientoHidrocanion")})
 	}
@@ -68,9 +68,9 @@ object blastoise {
 		}
 	}
 
-	method colisionConPokemon(pokemon) {
-		self.position().x() - 1
-		self.position().y()
+	method colisionoConPokemon(pokemon) {
+	    self.position(game.at(2,3))
+		pokemon.position(game.at(1,3))
 	}
 
 }
@@ -91,6 +91,7 @@ object charizard {
 		game.say(self, llamarada.nombre())
 		game.addVisual(llamarada)
 		llamarada.movete2(self)
+		game.whenCollideDo(llamarada, { hidrocanion => llamarada.colision(hidrocanion)})
 		game.onTick(3000, "movimientoLlamarada", { llamarada.movete2(self)})
 	}
 
@@ -114,11 +115,6 @@ object charizard {
 		}
 	}
 
-	method colisionConPokemon(pokemon) {
-		self.position().x() + 1
-		self.position().y()
-	}
-
 }
 
 class Habilidad {
@@ -130,14 +126,10 @@ class Habilidad {
 
 	method image() = imagen
 
-	method explosion(habilidad) {
-		game.removeVisual(habilidad)
-		game.addVisual("Explosion.png")
-	}
-
 	method colision(habilidad) {
-		self.explosion(habilidad)
-		
+		game.removeVisual(habilidad)
+		explosion.position(self.position())
+		game.onTick(3000, "aparace explosion", { game.addVisual(explosion)})
 	}
 
 	method movete1(pokemon) {
@@ -154,16 +146,12 @@ class Habilidad {
 
 }
 
-class Explosiones {
+object explosion {
 
-	var imagen
+	var property position = game.center()
 
-	method image() = imagen
+	method image() = "Explosion.png"
 
-//	method colision(habilidad) {
-//		self.explosion(habilidad)
-//		
-//	}
 }
 
 object movimiento {
@@ -202,10 +190,9 @@ object movimiento {
 
 }
 
-// pokemon tiene variable vidas 10, un method restarvida(ataque)
-// vida = vida - habilidad.daño()
-// un method actualizar vista quita al pokemon muerto
-//para el ataque paso posicion y pokemon que lo usa
-// limitar movimiento de posiciones hasta limite de pantalla
+
+
+
+//Ver colisiones de pokemones y explosion (colision de habilidades).
 //calcular el limite y donde estoy para, que la hablilidad sepa hasta
 //donde se puede mover el ataque
