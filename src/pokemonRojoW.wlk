@@ -18,6 +18,7 @@ object juego {
 			// Colisiones
 		game.whenCollideDo(blastoise, { objeto => blastoise.Colisionar(objeto)})
 		game.whenCollideDo(charizard, { objeto => charizard.Colisionar(objeto)})
+
 		
 	}
 
@@ -69,10 +70,10 @@ object blastoise {
 	
 	method colisionoConPokemon(pokemon){
 		if(pokemon.esBlastoise()){
-			return pokemon.position().x()+1
+			game.onCollideDo(self,{charizard => charizard.position().x()+1})
 		    }
 		else{
-		   	return self.position().x()-1
+			game.onCollideDo(self,{blastoise => blastoise.position().x()-1})
 		}
 	}
 	
@@ -136,10 +137,10 @@ object charizard {
 	
 	method colisionoConPokemon(pokemon){
 		if(pokemon.esBlastoise()){
-			return self.position().x()+1
+			game.onCollideDo(self,{charizard => charizard.position().x()+1})
 		    }
 		else{
-		   	return pokemon.position().x()-1
+			game.onCollideDo(self,{blastoise => blastoise.position().x()-1})
 		}
 	}
 	
@@ -177,8 +178,8 @@ class Habilidad {
 	method colision(habilidad1,habilidad2) {
 		game.removeVisual(habilidad1)
 		game.removeVisual(habilidad2)
-		explosion.position(self.position())
-		game.onTick(500, "aparace explosion", { game.addVisual(explosion)})
+		const explosion1 = new Explosion() [position = self.position()]
+		game.addVisual(explosion1)
 	}
 
 	method movete1(pokemon) {
@@ -207,7 +208,7 @@ class Habilidad {
 
 }
 
-object explosion {
+class Explosion {
 
 	var property position = game.center()
 
