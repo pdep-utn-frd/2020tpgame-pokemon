@@ -16,8 +16,8 @@ object juego {
 		keyboard.space().onPressDo({ blastoise.ataque()})
 		keyboard.enter().onPressDo({ charizard.ataque()})
 			// Colisiones
-		game.whenCollideDo(blastoise, { objeto => blastoise.Colisionar(objeto)})
-		game.whenCollideDo(charizard, { objeto => charizard.Colisionar(objeto)})
+		game.whenCollideDo(blastoise, { objeto => blastoise.colisionar(objeto)})
+		game.whenCollideDo(charizard, { objeto => charizard.colisionar(objeto)})
 
 		
 	}
@@ -59,6 +59,7 @@ object blastoise {
 	method colisionoConAtaque(llamarada) {
 		if (vidas <= 0) {
 			game.say(charizard, "Murio Blastoise")
+			game.sound("Winner.mp3")
 			game.removeVisual(self)
 			game.removeVisual(llamarada)
 		} else {
@@ -77,7 +78,7 @@ object blastoise {
 		}
 	}
 	
-	method Colisionar(objeto){
+	method colisionar(objeto){
 		if (objeto.sosPokemon()){
 			self.colisionoConPokemon(objeto)
 		}
@@ -126,6 +127,7 @@ object charizard {
 	method colisionoConAtaque(hidrocanion) {
 		if (vidas <= 0) {
 			game.say(blastoise, "Murio Charizard")
+			game.sound("Winner.mp3")
 			game.removeVisual(self)
 			game.removeVisual(hidrocanion)
 		} else {
@@ -145,7 +147,7 @@ object charizard {
 	}
 	
 	
-	method Colisionar(objeto){
+	method colisionar(objeto){
 		if (objeto.sosPokemon()){
 			self.colisionoConPokemon(objeto)
 		}
@@ -175,12 +177,16 @@ class Habilidad {
 		return true
 	}
 
-	method colision(habilidad1,habilidad2) {
-		game.removeVisual(habilidad1)
-		game.removeVisual(habilidad2)
-		const explosion1 = new Explosion() [position = self.position()]
-		game.addVisual(explosion1)
-	}
+	method colision(habilidad1, habilidad2) {
+        const explosion1 = new Explosion()
+        explosion1.position(habilidad1.position())
+        game.addVisual(explosion1)
+        game.removeVisual(habilidad2)
+        game.removeVisual(habilidad1)
+
+        game.schedule(300, {=> game.removeVisual(explosion1)})
+
+    }
 
 	method movete1(pokemon) {
 		const x = pokemon.position().x() + 1
@@ -251,12 +257,3 @@ object movimiento {
 	}
 
 }
-
-
-
-
-//Ver colisiones de pokemones y explosion (colision de habilidades).
-
-
-//calcular el limite y donde estoy para, que la hablilidad sepa hasta
-//donde se puede mover el ataque

@@ -13,6 +13,7 @@ program combatePokemon{
 	game.addVisual(charizard) 
 	
 	game.boardGround("FondoPokemonWollok.png")
+	game.sound("Musica.mp3")
 	
 	game.width(12)
 	game.height(6)
