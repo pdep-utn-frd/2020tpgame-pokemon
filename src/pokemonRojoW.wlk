@@ -18,18 +18,27 @@ object juego {
 			// Colisiones
 		game.whenCollideDo(blastoise, { objeto => blastoise.colisionar(objeto)})
 		game.whenCollideDo(charizard, { objeto => charizard.colisionar(objeto)})
-		//Musica
+         // Musica
 		const musicaPokemon = game.sound("Musica.mp3")
 		game.schedule(100, { musicaPokemon.play()})
-	    musicaPokemon.volume(0.5)
+		musicaPokemon.volume(0.5)
+		
+		
 	}
 
 }
 
-object blastoise {
+const blastoise = new Pokemon(position = game.at(1, 3), vidas = 8, imagen = "blastoise.png", ataque = new Habilidad(nombre = "Hidrocanion", danio = 150, position = blastoise.position(), imagen = "hidrocañon.png"))
 
-	var property position = game.at(1, 3)
-	var property vidas = 8
+const charizard = new Pokemon(position = game.at(10, 3), vidas = 12, imagen = "charizard2.png", ataque = new Habilidad(nombre = "Llamarada", danio = 110, position = charizard.position(), imagen = "llamarada.png"))
+
+class Pokemon {
+
+	var property position
+	var property vidas
+	var imagen
+	const ataque = new Habilidad()
+	const colision = new Colisiones()
 
 	method restarVida(habilidad) {
 		vidas = vidas - (habilidad.danio() / 100)
@@ -47,110 +56,56 @@ object blastoise {
 		return false
 	}
 
-	method image() = "blastoise.png"
+	method image() = imagen
+
+	method colisionPokemon(pokemon) {
+		colision.colisionar(self, pokemon)
+	}
+
+	method colisionAtaque(habilidad) {
+		colision.colisionar(habilidad, self)
+	}
 
 	method ataque() {
-		const hidrocanion = new Habilidad(nombre = "Hidrocanion", danio = 150, position = self.position(), imagen = "hidrocañon.png")
-		game.say(self, hidrocanion.nombre())
-		game.addVisual(hidrocanion)
-		hidrocanion.movete1(self)
-		game.whenCollideDo(hidrocanion, { llamarada => hidrocanion.colision(llamarada, hidrocanion)})
-		game.onTick(500, "movimientoHidrocanion", { hidrocanion.moverAtaque(self)})
-	}
-
-	method colisionoConAtaque(llamarada) {
-		if (vidas <= 0) {
-			game.say(charizard, "Murio Blastoise")
-			const ganador = game.sound("Winner.mp3")
-		    ganador.play()
-			game.removeVisual(self)
-			game.removeVisual(llamarada)
-		} else {
-			self.restarVida(llamarada)
-			game.say(self, " mi vida actual : " + self.vidas())
-			game.removeVisual(llamarada)
-		}
-	}
-
-	method colisionoConPokemon(pokemon) {
-		if (pokemon.esBlastoise()) {
-			game.onCollideDo(self, { charizard => charizard.position(self.position().x() + 1)})
-		} 
-		else { game.onCollideDo(self, { blastoise => blastoise.position(self.position().x() - 1)}) }
-	}
-
-	method colisionar(objeto) {
-		if (objeto.sosPokemon()) {
-			self.colisionoConPokemon(objeto)
-		}
-		if (objeto.sosUnAtaque()) {
-			self.colisionoConAtaque(objeto)
-		} else {
-		}
+		game.say(self, ataque.nombre())
+		game.addVisual(ataque)
+		ataque.movete1(self)
+		game.whenCollideDo(ataque, { ataque2 => ataque.colision(ataque2, ataque)})
+		game.onTick(500, "movimientoAtaque", { ataque.moverAtaque(self)})
 	}
 
 }
 
-object charizard {
+class Colisiones {
 
-	var property position = game.at(10, 3)
-	var property vidas = 12
-
-	method restarVida(habilidad) {
-		vidas = vidas - (habilidad.danio() / 100)
-	}
-
-	method sosPokemon() {
-		return true
-	}
-
-	method sosUnAtaque() {
-		return false
-	}
-
-	method esBlastoise() {
-		return false
-	}
-
-	method image() = "charizard2.png"
-
-	method ataque() {
-		const llamarada = new Habilidad(nombre = "Llamarada", danio = 110, position = self.position(), imagen = "llamarada.png")
-		game.say(self, llamarada.nombre())
-		game.addVisual(llamarada)
-		llamarada.movete2(self)
-		game.whenCollideDo(llamarada, { hidrocanion => llamarada.colision(hidrocanion, llamarada)})
-		game.onTick(500, "movimientoLlamarada", { llamarada.moverAtaque(self)})
-	}
-
-	method colisionoConAtaque(hidrocanion) {
-		if (vidas <= 0) {
-			game.say(blastoise, "Murio Charizard")
-			const ganador = game.sound("Winner.mp3")
-		    ganador.play()
-			game.removeVisual(self)
-			game.removeVisual(hidrocanion)
+	method colisionoConAtaque(ataque, pokemon) {
+		if (pokemon.vidas() <= 0) {
+			// game.say(charizard, "Murio Blastoise")
+			// const ganador = game.sound("Winner.mp3")
+			// ganador.play()
+			game.removeVisual(pokemon)
+			game.removeVisual(ataque)
 		} else {
-			self.restarVida(hidrocanion)
-			game.say(self, " mi vida actual : " + self.vidas())
-			game.removeVisual(hidrocanion)
+			pokemon.restarVida(ataque)
+			game.say(pokemon, " mi vida actual : " + pokemon.vidas())
+			game.removeVisual(ataque)
 		}
 	}
 
 	method colisionoConPokemon(pokemon) {
 		if (pokemon.esBlastoise()) {
-			game.onCollideDo(self, { charizard => charizard.position(self.position().x() + 1)})
+			game.onCollideDo(pokemon, { pokemon2 => pokemon2.position(pokemon.position().x() + 1)})
 		} else {
-			game.onCollideDo(self, { blastoise => blastoise.position(self.position().x() - 1)})
+			game.onCollideDo(pokemon, { pokemon1 => pokemon1.position(pokemon.position().x() - 1)})
 		}
 	}
 
-	method colisionar(objeto) {
+	method colisionar(objeto, objeto2) {
 		if (objeto.sosPokemon()) {
 			self.colisionoConPokemon(objeto)
 		}
 		if (objeto.sosUnAtaque()) {
-			self.colisionoConAtaque(objeto)
+			self.colisionoConAtaque(objeto, objeto2)
 		} else {
 		}
 	}
