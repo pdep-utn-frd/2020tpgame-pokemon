@@ -1,5 +1,11 @@
 import wollok.game.*
 
+
+const blastoise = new Pokemon(position = game.at(1, 3), vidas = 8, imagen = "blastoise.png", ataque = new Habilidad(nombre = "Hidrocanion", danio = 150, position = blastoise.position(), imagen = "hidrocañon.png"))
+
+const charizard = new Pokemon(position = game.at(10, 3), vidas = 12, imagen = "charizard2.png", ataque = new Habilidad(nombre = "Llamarada", danio = 110, position = charizard.position(), imagen = "llamarada.png"))
+
+
 object juego {
 
 	method inicio() {
@@ -22,24 +28,19 @@ object juego {
 		const musicaPokemon = game.sound("Musica.mp3")
 		game.schedule(100, { musicaPokemon.play()})
 		musicaPokemon.volume(0.5)
-		
-		
+				
 	}
 
 }
-
-const blastoise = new Pokemon(position = game.at(1, 3), vidas = 8, imagen = "blastoise.png", ataque = new Habilidad(nombre = "Hidrocanion", danio = 150, position = blastoise.position(), imagen = "hidrocañon.png"))
-
-const charizard = new Pokemon(position = game.at(10, 3), vidas = 12, imagen = "charizard2.png", ataque = new Habilidad(nombre = "Llamarada", danio = 110, position = charizard.position(), imagen = "llamarada.png"))
 
 class Pokemon {
 
 	var property position
 	var property vidas
 	var imagen
-	const ataque = new Habilidad()
-	const colision = new Colisiones()
-
+	const ataque =  new Habilidad ()
+	//arreglar la definicion de ataque y colision (borre const ataque =  nueva Habilidad ()
+	//colisión const =  nuevas Colisiones ()  )
 	method restarVida(habilidad) {
 		vidas = vidas - (habilidad.danio() / 100)
 	}
@@ -59,10 +60,12 @@ class Pokemon {
 	method image() = imagen
 
 	method colisionPokemon(pokemon) {
+		const colision = new Colisiones(pokemon = self)
 		colision.colisionar(self, pokemon)
 	}
 
 	method colisionAtaque(habilidad) {
+		const colision = new Colisiones()
 		colision.colisionar(habilidad, self)
 	}
 
@@ -77,8 +80,10 @@ class Pokemon {
 }
 
 class Colisiones {
-
-	method colisionoConAtaque(ataque, pokemon) {
+    const ataque = new Habilidad()
+    const pokemon = new Pokemon()
+    
+	method colisionoConAtaque() {
 		if (pokemon.vidas() <= 0) {
 			// game.say(charizard, "Murio Blastoise")
 			// const ganador = game.sound("Winner.mp3")
@@ -87,12 +92,12 @@ class Colisiones {
 			game.removeVisual(ataque)
 		} else {
 			pokemon.restarVida(ataque)
-			game.say(pokemon, " mi vida actual : " + pokemon.vidas())
+			game.say(pokemon, " mi vida actual : " + pokemon.vidas().toString().toString())
 			game.removeVisual(ataque)
 		}
 	}
 
-	method colisionoConPokemon(pokemon) {
+	method colisionoConPokemon() {
 		if (pokemon.esBlastoise()) {
 			game.onCollideDo(pokemon, { pokemon2 => pokemon2.position(pokemon.position().x() + 1)})
 		} else {
