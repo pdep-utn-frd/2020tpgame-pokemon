@@ -59,15 +59,20 @@ class Pokemon {
 
 	method image() = imagen
 
-	method colisionPokemon(pokemon) {
-		const colision = new Colisiones(pokemon = self)
-		colision.colisionar(self, pokemon)
-	}
 
-	method colisionAtaque(habilidad) {
-		const colision = new Colisiones()
-		colision.colisionar(habilidad, self)
-	}
+ method colisionarCon(objeto){
+ 	  const colision = new Colisiones(pokemon = self)
+ 	  colision.colisionar(objeto)
+ }
+//	method colisionPokemon(pokemon) {
+//		const colision = new Colisiones(pokemon = self)
+//		colision.colisionar(self, pokemon)
+//	}
+
+//	method colisionAtaque(habilidad) {
+//		const colision = new Colisiones()
+//		colision.colisionar(habilidad, self)
+//	}
 
 	method ataque() {
 		game.say(self, ataque.nombre())
@@ -80,37 +85,36 @@ class Pokemon {
 }
 
 class Colisiones {
-    const ataque = new Habilidad()
     const pokemon = new Pokemon()
     
-	method colisionoConAtaque() {
+	method colisionoConAtaque(objeto) {
 		if (pokemon.vidas() <= 0) {
 			// game.say(charizard, "Murio Blastoise")
 			// const ganador = game.sound("Winner.mp3")
 			// ganador.play()
 			game.removeVisual(pokemon)
-			game.removeVisual(ataque)
+			game.removeVisual(objeto)
 		} else {
-			pokemon.restarVida(ataque)
+			pokemon.restarVida(objeto)
 			game.say(pokemon, " mi vida actual : " + pokemon.vidas().toString().toString())
-			game.removeVisual(ataque)
+			game.removeVisual(objeto)
 		}
 	}
 
-	method colisionoConPokemon() {
+	method colisionoConPokemon(objeto) {
 		if (pokemon.esBlastoise()) {
-			game.onCollideDo(pokemon, { pokemon2 => pokemon2.position(pokemon.position().x() + 1)})
+			game.onCollideDo(pokemon, { obj => obj.position(pokemon.position().x() + 1)})
 		} else {
-			game.onCollideDo(pokemon, { pokemon1 => pokemon1.position(pokemon.position().x() - 1)})
+			game.onCollideDo(pokemon, { obj => obj.position(pokemon.position().x() - 1)})
 		}
 	}
 
-	method colisionar(objeto, objeto2) {
+	method colisionar(objeto) {
 		if (objeto.sosPokemon()) {
 			self.colisionoConPokemon(objeto)
 		}
 		if (objeto.sosUnAtaque()) {
-			self.colisionoConAtaque(objeto, objeto2)
+			self.colisionoConAtaque(objeto)
 		} else {
 		}
 	}
