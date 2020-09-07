@@ -1,9 +1,8 @@
 import wollok.game.*
 
+const blastoise = new PokemonTipoAgua(position = game.at(1, 3), vidas = 8,nombre = "blastoise",desplazamiento = 1, imagen = "blastoise.png",tipo = "agua")
 
-const blastoise = new Pokemon(position = game.at(1, 3), vidas = 8,nombre = "blastoise", imagen = "blastoise.png")
-
-const charizard = new Pokemon(position = game.at(10, 3), vidas = 12,nombre = "charizard", imagen = "charizard2.png")
+const charizard = new PokemonTipoFuego(position = game.at(10, 3), vidas = 12,nombre = "charizard",desplazamiento = -1, imagen = "charizard2.png",tipo = "fuego")
 
 object juego {
 
@@ -21,56 +20,75 @@ object juego {
 		keyboard.space().onPressDo({ blastoise.ataque()})
 		keyboard.enter().onPressDo({ charizard.ataque()})
 			// Colisiones
-		game.whenCollideDo(blastoise, { objeto => blastoise.colisionarCon(objeto)})
-		game.whenCollideDo(charizard, { objeto => charizard.colisionarCon(objeto)})
-         // Musica
+		game.whenCollideDo(blastoise, { objeto => blastoise.colisionar(objeto)})
+		game.whenCollideDo(charizard, { objeto => charizard.colisionar(objeto)})
+            // Musica
 		const musicaPokemon = game.sound("Musica.mp3")
 		game.schedule(100, { musicaPokemon.play()})
 		musicaPokemon.volume(0.5)
 				
 	}
-
+	
+	//method reiniciar(){}
+	//dos teclas, 1 para volver a empezar otra  y 1 para salir
+	
 }
+
+	// poner variable para el desplazamiento
 
 class Pokemon {
 
-	var property position
+	var property position 
 	var property vidas
 	var property nombre
+	var property desplazamiento
 	var imagen
-	
-	//arreglar la definicion de ataque y colision (borre const ataque =  nueva Habilidad ()
-	//colisión const =  nuevas Colisiones ()  )
 	
 	method restarVida(habilidad) {
 		vidas = vidas - (habilidad.danio() / 100)
 	}
-
-	method sosPokemon() {
-		return true
-	}
-
-	method sosUnAtaque() {
-		return false
-	}
+	
+	method sosPokemon(){return true}
+	method sosUnAtaque(){return false}
+	
+	 // no usar sosPokemon ni sosAqtaque, usar self
 
 	method image() = imagen
-	
-	method miAtaque(){
-		if (self.nombre()=="blastoise"){
-			const hidrocanion = new Habilidad(nombre = "Hidrocanion", danio = 150, position = blastoise.position(), imagen = "hidrocañon.png")
-			return hidrocanion
+
+
+	method colisionoConPokemon(otroPokemon) {
+		if(otroPokemon.desplazamiento()== 1) {game.onCollideDo(self, {movimiento => movimiento.moveteDerecha(self)})}
+		else {game.onCollideDo(self, {movimiento => movimiento.moveteIzquierda(self)})}
+	}
+
+	method colisionar(objeto) {
+		if (//FILTRAR POKEMON ){
+			self.colisionoConPokemon(objeto)
 		}
-		else {
-			const llamarada = new Habilidad(nombre = "Llamarada", danio = 110, position = charizard.position(), imagen = "llamarada.png")
-			return llamarada
+		if (//FILTRAR ATAQUE) {
+			self.colisionoConAtaque(objeto)
+		} else {
 		}
 	}
 
- 	method colisionarCon(objeto){
- 	  const colision = new Colisiones(pokemon = self)
- 	  colision.colisionar(objeto)
- }
+	method colisionoConAtaque(objeto) {
+		self.restarVida(objeto)
+		if (self.vidas() <= 0) {
+			// game.say(charizard, "Murio Blastoise")
+			const ganador = game.sound("Winner.mp3")
+			ganador.play()
+			game.removeVisual(self)
+			game.removeVisual(objeto)
+		} else {
+			game.say(self, " mi vida actual : " + self.vidas().toString().toString())
+			game.removeVisual(objeto)
+		}
+	}
+
+ 	//method colisionarCon(objeto){
+ 	  //const colision = new Colisiones(pokemon = self)
+ 	  //colision.colisionar(objeto)
+ //}
 //	method colisionPokemon(pokemon) {
 //		const colision = new Colisiones(pokemon = self)
 //		colision.colisionar(self, pokemon)
@@ -81,53 +99,46 @@ class Pokemon {
 //		colision.colisionar(habilidad, self)
 //	}
 
+
+}
+
+class PokemonTipoAgua inherits Pokemon{
+	var property tipo
+
+	method miAtaque(){
+			  const hidrocanion = new AtaqueAgua(nombre = "Hidrocanion", danio = 150, position = blastoise.position(), imagen = "hidrocañon.png")
+			  return hidrocanion
+	}
+
 	method ataque() {
-		const ataque = self.miAtaque()
-		game.say(self, ataque.nombre())
-		game.addVisual(ataque) 
-		ataque.movete12(self)
-		game.whenCollideDo(ataque, { ataque2 => ataque.colision(ataque2, ataque)})
-		game.onTick(500, "movimientoAtaque", { ataque.moverAtaque(self)})
+		const ataqueAgua = self.miAtaque()
+		game.say(self, ataqueAgua.nombre())
+		game.addVisual(ataqueAgua) 
+		ataqueAgua.movete1(self)
+		game.whenCollideDo(ataqueAgua, { ataque2 => ataqueAgua.colision(ataque2, ataqueAgua)})
+		game.onTick(500, "movimientoAtaque", { ataqueAgua.moverAtaque(self)})
 	}
-
 }
 
-class Colisiones {
-    const pokemon = new Pokemon()
-    
-	method colisionoConAtaque(objeto) {
-		if (pokemon.vidas() <= 0) {
-			// game.say(charizard, "Murio Blastoise")
-			const ganador = game.sound("Winner.mp3")
-			ganador.play()
-			game.removeVisual(pokemon)
-			game.removeVisual(objeto)
-		} else {
-			pokemon.restarVida(objeto)
-			game.say(pokemon, " mi vida actual : " + pokemon.vidas().toString().toString())
-			game.removeVisual(objeto)
-		}
+class PokemonTipoFuego inherits Pokemon{
+	var property tipo
+
+	method miAtaque(){
+			  const llamarada = new AtaqueFuego(nombre = "Llamarada", danio = 110, position = charizard.position(), imagen = "llamarada.png")
+			  return llamarada
 	}
 
-	method colisionoConPokemon(objeto) {
-		if (pokemon.nombre() == "blastoise") {
-			game.onCollideDo(pokemon, { obj => obj.position(pokemon.position().x() + 1)})
-		} else {
-			game.onCollideDo(pokemon, { obj => obj.position(pokemon.position().x() - 1)})
-		}
+	method ataque() {
+		const ataqueFuego = self.miAtaque()
+		game.say(self, ataqueFuego.nombre())
+		game.addVisual(ataqueFuego) 
+		ataqueFuego.movete2(self)
+		game.whenCollideDo(ataqueFuego, { ataque2 => ataqueFuego.colision(ataque2, ataqueFuego)})
+		game.onTick(500, "movimientoAtaque", { ataqueFuego.moverAtaque(self)})
 	}
-
-	method colisionar(objeto) {
-		if (objeto.sosPokemon()) {
-			self.colisionoConPokemon(objeto)
-		}
-		if (objeto.sosUnAtaque()) {
-			self.colisionoConAtaque(objeto)
-		} else {
-		}
-	}
-
 }
+
+// colisiones no sirve , que los pokemones y ataques se arreglen solos
 
 class Habilidad {
 
@@ -136,15 +147,10 @@ class Habilidad {
 	var property position
 	var imagen
 
+	method sosPokemon(){return false}
+	method sosUnAtaque(){return true}
+
 	method image() = imagen
-
-	method sosPokemon() {
-		return false
-	}
-
-	method sosUnAtaque() {
-		return true
-	}
 
 	method colision(habilidad1, habilidad2) {
 		const explosion1 = new Explosion()
@@ -155,29 +161,9 @@ class Habilidad {
 		game.schedule(300, {=> game.removeVisual(explosion1)})
 	}
 
-	method movete12(pokemon){
-		if (pokemon.nombre()=="blastoise"){
-			self.movete1(pokemon)
-		}
-		else{
-			self.movete2(pokemon)
-		}
-	}
-	method movete1(pokemon) {
-		const x = pokemon.position().x() + 1
-		const y = pokemon.position().y()
-		position = game.at(x, y)
-	}
-
-	method movete2(pokemon) {
-		const x = pokemon.position().x() - 1
-		const y = pokemon.position().y()
-		position = game.at(x, y)
-	}
-
 	method moverAtaque(pokemon) {
 		var direccion = 0
-		if (pokemon.nombre()=="blastoise") {
+		if (pokemon.tipo() == "agua") {
 			direccion = 1
 		} else {
 			direccion = -1
@@ -189,6 +175,25 @@ class Habilidad {
 
 }
 
+class AtaqueAgua inherits Habilidad{
+
+	method movete1(pokemon) {
+		const x = pokemon.position().x() + 1
+		const y = pokemon.position().y()
+		position = game.at(x, y)
+	}
+}
+
+class AtaqueFuego inherits Habilidad {
+
+	method movete2(pokemon) {
+		const x = pokemon.position().x() - 1
+		const y = pokemon.position().y()
+		position = game.at(x, y)
+	}
+}
+
+
 class Explosion {
 
 	var property position = game.center()
@@ -196,6 +201,8 @@ class Explosion {
 	method image() = "Explosion.png"
 
 }
+
+// hay que usar objeto movimiento par mover los ataques y pokemon
 
 object movimiento {
 
@@ -230,6 +237,7 @@ object movimiento {
 	method moveteAbajo(objeto) {
 		if (objeto.position().y() > 0 and objeto.position().y() <= 6) self.moverDown(objeto)
 	}
+
 
 }
 
