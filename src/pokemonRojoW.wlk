@@ -1,8 +1,8 @@
 import wollok.game.*
 
-const blastoise = new PokemonTipoAgua(position = game.at(1, 3), vidas = 8,nombre = "blastoise",desplazamiento = 1, imagen = "blastoise.png",tipo = "agua")
+const blastoise = new PokemonTipoAgua(position = game.at(1, 3), vidas = 8,nombre = "blastoise",desplazamiento = "i", imagen = "blastoise.png",tipo = "agua")
 
-const charizard = new PokemonTipoFuego(position = game.at(10, 3), vidas = 12,nombre = "charizard",desplazamiento = -1, imagen = "charizard2.png",tipo = "fuego")
+const charizard = new PokemonTipoFuego(position = game.at(10, 3), vidas = 12,nombre = "charizard",desplazamiento = "d", imagen = "charizard2.png",tipo = "fuego")
 
 object juego {
 
@@ -42,33 +42,38 @@ class Pokemon {
 	var property vidas
 	var property nombre
 	var property desplazamiento
+	var property codigo = 1
 	var imagen
 	
 	method restarVida(habilidad) {
 		vidas = vidas - (habilidad.danio() / 100)
 	}
 	
-	method sosPokemon(){return true}
-	method sosUnAtaque(){return false}
-	
 	 // no usar sosPokemon ni sosAqtaque, usar self
 
 	method image() = imagen
-
-
+	
 	method colisionoConPokemon(otroPokemon) {
-		if(otroPokemon.desplazamiento()== 1) {game.onCollideDo(self, {movimiento => movimiento.moveteDerecha(self)})}
-		else {game.onCollideDo(self, {movimiento => movimiento.moveteIzquierda(self)})}
-	}
+        game.onCollideDo(self, {pokemon => self.mover(pokemon)})
+    }
 
-	method colisionar(objeto) {
-		if (//FILTRAR POKEMON ){
+	method mover(otroPokemon){
+    	if(otroPokemon.desplazamiento()== "i"){
+       	 movimiento.moveteIzquierda(otroPokemon)
+    	}
+    	else {movimiento.moveteDerecha(otroPokemon)}
+	}
+	
+//	{game.onCollideDo(self, {movimiento => movimiento.moveteIzquierda(self)})}
+
+	method colisionar(objeto){
+		if(objeto.codigo() == 1){
 			self.colisionoConPokemon(objeto)
-		}
-		if (//FILTRAR ATAQUE) {
+			}
+		if(objeto.codigo() == 0){
 			self.colisionoConAtaque(objeto)
-		} else {
-		}
+			}
+		else {}
 	}
 
 	method colisionoConAtaque(objeto) {
@@ -84,21 +89,6 @@ class Pokemon {
 			game.removeVisual(objeto)
 		}
 	}
-
- 	//method colisionarCon(objeto){
- 	  //const colision = new Colisiones(pokemon = self)
- 	  //colision.colisionar(objeto)
- //}
-//	method colisionPokemon(pokemon) {
-//		const colision = new Colisiones(pokemon = self)
-//		colision.colisionar(self, pokemon)
-//	}
-
-//	method colisionAtaque(habilidad) {
-//		const colision = new Colisiones()
-//		colision.colisionar(habilidad, self)
-//	}
-
 
 }
 
@@ -145,10 +135,8 @@ class Habilidad {
 	var property nombre
 	var property danio
 	var property position
+	var property codigo = 0
 	var imagen
-
-	method sosPokemon(){return false}
-	method sosUnAtaque(){return true}
 
 	method image() = imagen
 
