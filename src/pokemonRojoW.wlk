@@ -64,7 +64,7 @@ class Pokemon {
 	}
 	
 	method restaurarSalud(habilidad){
-		if (vidas <= vidaMax){
+		if (vidas < vidaMax){
 			vidas = vidas + vidas*habilidad.restaurarS() 
 			}
 		else {}
@@ -75,13 +75,13 @@ class Pokemon {
 	method image() = imagen
 	
 	method colisionoConPokemon() {
-        game.onCollideDo(self, {otroPokemon => self.mover(otroPokemon)})
+        game.onCollideDo(self, {otroPokemon => self.chocar(otroPokemon)})
     }
 
-	method mover(otroPokemon){
+	method chocar(otroPokemon){
     	if(otroPokemon.desplazamiento()== "i"){
-       	 movimiento.moveteIzquierda(otroPokemon)
-       	 movimiento.moveteDerecha(self)
+       	 	movimiento.moveteIzquierda(otroPokemon)
+       		movimiento.moveteDerecha(self)
     	}
     	else {
     		movimiento.moveteDerecha(otroPokemon)
@@ -98,7 +98,10 @@ class Pokemon {
 		if(objeto.codigo() == 0){
 			self.colisionoConAtaque(objeto)
 			}
-		else {}
+		else(objeto.codigo()== 2)
+		{
+			self.megaEvolucion()
+		}
 	}
 
 	method colisionoConAtaque(objeto) {
@@ -278,6 +281,7 @@ class Explosion {
 class PiedraMega {
 	
 	var property position = game.center()
+	var codigo = 2
 	
 	method image()= "PiedraMega.png"
 }
