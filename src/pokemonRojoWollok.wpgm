@@ -7,13 +7,10 @@ import wollok.game.*
 // quede en pie.
 
 program combatePokemon{
-
-	game.addVisual(blastoise)
-	game.addVisual(charizard)
-	game.addVisual(mega) 
-	
+ 
+ 	game.title("Batalla Pokemon")
+ 
 	game.boardGround("FondoPokemonWollok.png")
-	
 	
 	game.width(12)
 	game.height(6)

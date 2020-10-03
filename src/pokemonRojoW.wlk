@@ -6,9 +6,22 @@ const charizard = new TipoFuego (position = game.at(10, 3), vida = 150,vidaMax =
 
 const mega = new PiedraMega(position = game.at(5,3))
 
+object reinicio {
+	var property position = game.at(1,5)
+		
+	method image() = "reinicio.png"
+}
+
 object juego {
 	
 	method inicio() {
+		
+		// Objetos
+		game.addVisual(blastoise)
+		game.addVisual(charizard)
+		game.addVisual(mega)
+		
+		// Movimiento
 		keyboard.a().onPressDo({ movimiento.moveteIzquierda(blastoise)})
 		keyboard.d().onPressDo({ movimiento.moveteDerecha(blastoise)})
 		keyboard.w().onPressDo({ movimiento.moveteArriba(blastoise)})
@@ -25,20 +38,30 @@ object juego {
 		// Colisiones
 		game.whenCollideDo(blastoise, { objeto => objeto.colisionar(blastoise)})
 		game.whenCollideDo(charizard, { objeto => objeto.colisionar(charizard)})
+		game.whenCollideDo(mega, {objeto => objeto.colisionarConPiedraMega(mega)})
 		
 		// Musica
 		const musicaPokemon = game.sound("Musica.mp3")
 		game.schedule(100, { musicaPokemon.play()})
 		musicaPokemon.volume(0.5)
+		
+		// REINICIO DEL JUEGO
+		keyboard.r().onPressDo({self.reiniciar()})
+		
+		// FINALIZAR JUEGO
+		keyboard.t().onPressDo({self.terminar()})
 	
 	}
 	
-	method reiniciar(){  // r para reiniciar
-		
+	method reiniciar(){  
+		game.clear()
+		self.inicio()
+		game.addVisual(reinicio)
+		game.onTick(500, "quitar imagen",{=> game.removeVisual(reinicio)})
 	}
 	
-	method terminar(){ // t para terminar
-		
+	method terminar(){ 
+		game.stop()
 	}
 }
 
@@ -72,10 +95,10 @@ class Pokemon {
 			movimiento.moveteIzquierda(self)
        		movimiento.moveteDerecha(pokemon)
 		}
-		else {self.colisionPiedraMega()}
+		
 	}
 	
-	method colisionPiedraMega(){
+	method colisionarConPiedraMega(){
 		self.megaEvolucion()
 	}
 	
@@ -91,9 +114,10 @@ class Pokemon {
  class TipoAgua inherits Pokemon {
  	var property tipo
  	var cargaAtqMax = 0
+ 	var megaEvol = 0
  	
  	method miAtaque(){
- 		if (cargaAtqMax <= 2){
+ 		if ((cargaAtqMax <= 2) and (mega == 0)){
 			  const hidrocanion = new AtqTipoAgua(nombre = "Hidrocanion", danio = 70, position = self.position(), imagen = "hidrocañon.png",bonificacionA = 0)
 			  cargaAtqMax = cargaAtqMax + 1
 			  return hidrocanion
@@ -111,7 +135,6 @@ class Pokemon {
 		game.say(self, ataqueAgua.nombre())
 		game.addVisual(ataqueAgua) 
 		ataqueAgua.movete(self)
-		game.whenCollideDo(ataqueAgua, {ataqueAgua.colisionPiedraMega()})
 		game.whenCollideDo(ataqueAgua, { ataque2 => ataqueAgua.colision(ataque2, ataqueAgua)})
 		game.onTick(500, "movimientoAtaque", { ataqueAgua.moverAtaque(self)})
 	}
@@ -120,7 +143,7 @@ class Pokemon {
 		imagen = "MegaBlastoise.png"
 		vida = 300
 		vidaMax = 300
-		cargaAtqMax = 5
+		megaEvol = 1
 		game.say(self,"Mega Evolucion")
 		game.schedule(15000, {=> self.quitarMega()})
 	}
@@ -128,6 +151,7 @@ class Pokemon {
 		imagen = "blastoise.png"
 		vida = 100
 		vidaMax = 100
+		megaEvol = 0
 		game.addVisual(mega)
 	}
  		
@@ -135,9 +159,10 @@ class Pokemon {
  class TipoFuego inherits Pokemon{
  	var property tipo
  	var cargaAtqMax = 0
+ 	var megaEvol = 0
   	
   	method miAtaque(){
- 		if (cargaAtqMax <= 3){
+ 		if ((cargaAtqMax <= 3) and (mega == 0)){
 			  const llamarada = new AtqTipoFuego(nombre = "Llamarada", danio = 40, position = self.position(), imagen = "llamarada.png",bonificacionF = 0)
 			  cargaAtqMax = cargaAtqMax + 1
 			  return llamarada
@@ -155,7 +180,6 @@ class Pokemon {
 		game.say(self, ataqueFuego.nombre())
 		game.addVisual(ataqueFuego) 
 		ataqueFuego.movete(self)
-		game.whenCollideDo(ataqueFuego, {ataqueFuego.colisionPiedraMega()})
 		game.whenCollideDo(ataqueFuego, { ataque2 => ataqueFuego.colisionAtaque(ataque2,ataqueFuego)})
 		game.onTick(500, "movimientoAtaque", { ataqueFuego.moverAtaque(self)})
 	}
@@ -164,7 +188,7 @@ class Pokemon {
 		imagen = "MegaCharizard.png"
 		vida = 400
 		vidaMax = 400
-		cargaAtqMax = 5
+		megaEvol = 1
 		game.say(self,"Mega Evolucion")
 		game.schedule(15000, {=> self.quitarMega()})
 	}
@@ -173,6 +197,7 @@ class Pokemon {
 		imagen = "charizard2.png"
 		vida = 150
 		vidaMax = 150
+		megaEvol = 0
 		game.addVisual(mega)
 	}
  }
@@ -202,6 +227,10 @@ class Ataque {
 		}
 	}
 	
+	method colisionarConPiedraMega(){
+		
+	}
+	
 	method moverAtaque(pokemon) {
 		var direccion = 0
 		if (pokemon.tipo() == "agua") {
@@ -221,10 +250,6 @@ class Ataque {
 		game.removeVisual(otroAtaque)
 		game.removeVisual(miAtaque)
 		game.schedule(300,  {=> game.removeVisual(explosion)})
-	}
-	
-	method colisionPiedraMega(pMega){
-		
 	}
 	
 }
