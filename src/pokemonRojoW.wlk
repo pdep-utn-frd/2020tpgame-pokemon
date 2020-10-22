@@ -86,12 +86,17 @@ class Pokemon {
 		
 	}
 	
+	method morir(){
+		const ganador = game.sound("Winner.mp3")
+			ganador.play()
+			game.removeVisual(self)
+			// añadir imagen para reinicio de juego
+	}
+	
 	method restarVida(ataque) {
 		vida = vida - (ataque.danio() / 10)
 		if (self.vida() <= 0) {
-			const ganador = game.sound("Winner.mp3")
-			ganador.play()
-			game.removeVisual(self)
+			self.morir()
 		} else {
 			game.say(self, " mi vida actual : " + self.vida().toString().toString())
 		}
@@ -140,19 +145,16 @@ class Pokemon {
 	method generarAtaqueFuerte(){
 		return 0
 	}
-	
-	method colisionar(pokemon){
-		if (pokemon.lado() == "I"){
-			movimiento.moveteIzquierda(pokemon)
-       		movimiento.moveteDerecha(self)
-		}
-		if (pokemon.lado() == "D"){
-			movimiento.moveteIzquierda(self)
-       		movimiento.moveteDerecha(pokemon)
-		}
+
+	method rebotarHaciaAtras(){
 		
 	}
 	
+	method colisionar(pokemon){
+		pokemon.rebotarHaciaAtras()
+		self.rebotarHaciaAtras()
+	}
+
 	method megaEvolucion(){
 		game.schedule(15000, {=> self.quitarMega()})
 	}
@@ -164,6 +166,10 @@ class Pokemon {
 }
  class TipoAgua inherits Pokemon {
  	var property tipo
+ 
+ 	override method rebotarHaciaAtras(){
+ 		movimiento.moveteIzquierda(self)
+ 	}
  
  	override method Inicial(){
  		position = game.at(1,3)
@@ -200,6 +206,10 @@ class Pokemon {
  class TipoFuego inherits Pokemon{
  	var property tipo
  
+ 	override method rebotarHaciaAtras(){
+ 		movimiento.moveteDerecha(self)
+ 	}
+ 	
  	override method Inicial(){
  		position = game.at(10,3)
  		vida = vidaMax
