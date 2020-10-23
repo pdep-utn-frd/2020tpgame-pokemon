@@ -1,8 +1,8 @@
 import wollok.game.*
 
-const blastoise = new TipoAgua (position = game.at(1, 3), vida = 100,vidaMax = 100,nombre = "blastoise",lado = "I", imagen = "blastoise.png",tipo = "agua")
+const blastoise = new TipoAgua (position = game.at(1, 3), vida = 100,vidaMax = 100,nombre = "blastoise", imagen = "blastoise.png",tipo = "agua")
 
-const charizard = new TipoFuego (position = game.at(10, 3), vida = 150,vidaMax = 150,nombre = "charizard",lado = "D", imagen = "charizard2.png",tipo = "fuego")
+const charizard = new TipoFuego (position = game.at(10, 3), vida = 150,vidaMax = 150,nombre = "charizard", imagen = "charizard2.png",tipo = "fuego")
 
 const mega = new PiedraMega(position = game.at(5,3))
 
@@ -75,7 +75,6 @@ class Pokemon {
 	var property position
 	var property nombre
 	var property vidaMax
-	var property lado
 	var cargaAtqMax = 0
  	var megaEvol = 0
 	var imagen
@@ -98,7 +97,7 @@ class Pokemon {
 		if (self.vida() <= 0) {
 			self.morir()
 		} else {
-			game.say(self, " mi vida actual : " + self.vida().toString().toString())
+			game.say(self, " mi vida actual : " + self.vida().toString())
 		}
 	}
 	
